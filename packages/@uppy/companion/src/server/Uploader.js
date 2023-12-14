@@ -696,9 +696,18 @@ class Uploader {
     })
 
     const data = await upload.done()
+    let updatedData = { ...data };
+     // @ts-expect-error
+    const keyPath = updatedData?.Key;
+     // @ts-expect-error
+    const baseUrl = updatedData?.Location.split("/uploaded-videos")[0];
+
+    updatedData = {
+      ...updatedData,
+      Location: `${baseUrl}/${keyPath}`,
+    };
     return {
-      // @ts-expect-error For some reason `|| null` is not enough for TS
-      url: data?.Location || null,
+      url: updatedData?.Location || null,
       extraData: {
         response: {
           responseText: JSON.stringify(data),
